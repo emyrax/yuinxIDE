@@ -26,8 +26,9 @@ npx serve web.1v
 
 ## Key facts
 
-- **Waitlist form** in `app.js` POSTs JSON to `/api/waitlist` and GETs `/api/waitlist/count` — these are external endpoints not in this repo.
+- **Waitlist form** writes submissions to Firebase Realtime Database (`/waitlist/`). Duplicate email check uses `orderByChild('email')`. Count maintained atomically at `/waitlistCount` via transaction.
+- **Firebase initialized** in `assests/app.js` with compat SDK (scripts loaded from CDN in `index.html`).
 - **Animation logic** (`setupBuilderShowcase`) cycles through example prompts; uses `IntersectionObserver` for scroll reveals.
 - **Mobile-responsive** with explicit `.mobile-only` / `.desktop-only` classes.
 - **All asset references** use the misspelled path `./assests/` (not `./assets/`). This is intentional — the directory is named `assests/` on disk.
-- No external JS dependencies, no CDN scripts except Google Fonts and Cloudflare beacon.
+- No external JS dependencies (beyond Firebase SDK, Google Fonts, and Cloudflare beacon).

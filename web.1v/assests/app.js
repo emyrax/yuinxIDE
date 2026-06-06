@@ -1,34 +1,17 @@
 'use strict';
 
-const WAITLIST_COUNT_CACHE_KEY = 'duino_waitlist_count';
+const firebaseConfig = {
+  apiKey: "AIzaSyDUGwz1YOgCRVYK6n73BY9NWCAdkXlEpns",
+  authDomain: "yuinx-waitlist.firebaseapp.com",
+  databaseURL: "https://yuinx-waitlist-default-rtdb.firebaseio.com",
+  projectId: "yuinx-waitlist",
+  storageBucket: "yuinx-waitlist.firebasestorage.app",
+  messagingSenderId: "1075761613808",
+  appId: "1:1075761613808:web:f0df774d97deb974acab35",
+  measurementId: "G-J1B16VH3L0"
+};
 
-async function fetchJson(url, options = undefined) {
-  const response = await fetch(url, options);
-  const payload = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(payload.error || payload.message || 'Request failed.');
-  }
-
-  return payload;
-}
-
-function readCachedCount() {
-  try {
-    const value = Number(window.localStorage.getItem(WAITLIST_COUNT_CACHE_KEY));
-    return Number.isInteger(value) && value > 0 ? value : null;
-  } catch (error) {
-    return null;
-  }
-}
-
-function writeCachedCount(count) {
-  try {
-    window.localStorage.setItem(WAITLIST_COUNT_CACHE_KEY, String(count));
-  } catch (error) {
-    // Ignore storage failures; the live API value still updates the UI.
-  }
-}
+firebase.initializeApp(firebaseConfig);
 
 function randomDigitExcept(excludedDigit) {
   let digit = Math.floor(Math.random() * 10);
@@ -407,14 +390,46 @@ function setupWaitlistModal() {
 
 function setupWaitlistForms() {
   const forms = Array.from(document.querySelectorAll('[data-waitlist-form]'));
-  if (forms.length === 0) {
-    return;
+  if (forms.length === 0) return;
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let submitting = false;
+
+  function clearFields(form) {
+    form.querySelectorAll('.field-error').forEach((el) => el.classList.remove('field-error'));
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+  }
+
+  function markField(form, name) {
+    const field = form.querySelector(`[name="${name}"]`);
+    if (!field) return;
+    const label = field.closest('label');
+    if (label) label.classList.add('field-error');
+    field.setAttribute('aria-invalid', 'true');
+  }
+
+  function classifyError(error) {
+    if (!navigator.onLine) return 'No internet connection.';
+    const code = error.code || '';
+    if (code === 'PERMISSION_DENIED') return 'Server error. Please try again.';
+    if (code === 'NETWORK_ERROR') return 'No internet connection.';
+    if (error.message && error.message.includes('quota')) return 'Too many signups right now. Please wait.';
+    return 'Something went wrong. Please try again.';
   }
 
   forms.forEach((form) => {
+    // Live validation: clear errors on input
+    form.addEventListener('input', () => {
+      setFormStatus(form, '');
+      clearFields(form);
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (submitting) return;
+
       setFormStatus(form, '');
+      clearFields(form);
 
       const submitBtn = form.querySelector('button[type="submit"]');
       const submitLabel = (submitBtn && submitBtn.dataset.submitLabel) || 'Submit';
@@ -425,46 +440,80 @@ function setupWaitlistForms() {
         email: String(formData.get('email') || '').trim(),
         role: String(formData.get('role') || '').trim(),
         projectType: String(formData.get('projectType') || '').trim(),
-        teamSize: String(formData.get('teamSize') || '').trim(),
-        timeline: String(formData.get('timeline') || '').trim(),
         notes: String(formData.get('notes') || '').trim(),
         company: String(formData.get('company') || '').trim(),
         source: String(form.dataset.source || '').trim() || `waitlist-${window.location.pathname}`
       };
 
-      if (!payload.name || !payload.email || !payload.role || !payload.projectType) {
-        setFormStatus(form, 'Please complete all required fields.', 'error');
+      // Validation
+      const errors = [];
+      if (payload.name.length < 2) errors.push({ name: 'name', msg: 'Name is required (at least 2 characters).' });
+      if (!EMAIL_RE.test(payload.email)) errors.push({ name: 'email', msg: 'Enter a valid email address.' });
+      if (!payload.role || payload.role === 'Select role') errors.push({ name: 'role', msg: 'Select your role.' });
+      if (!payload.projectType || payload.projectType === 'Select use case') errors.push({ name: 'projectType', msg: 'Select a use case.' });
+
+      if (errors.length > 0) {
+        errors.forEach((e) => markField(form, e.name));
+        setFormStatus(form, errors.map((e) => e.msg).join(' '), 'error');
         return;
       }
 
+      // Honeypot: silently accept if bot filled hidden company field
+      if (payload.company) {
+        setFormStatus(form, 'Thank you!', 'success');
+        form.reset();
+        return;
+      }
+
+      submitting = true;
+
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Joining...';
+        submitBtn.classList.add('is-loading');
       }
 
       try {
-        const result = await fetchJson('/api/waitlist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const db = firebase.database();
+
+        // Duplicate email check
+        const snap = await db.ref('waitlist')
+          .orderByChild('email')
+          .equalTo(payload.email)
+          .once('value');
+
+        if (snap.exists()) {
+          setFormStatus(form, 'You are already on the waitlist.', 'success');
+          return;
+        }
+
+        // Push new entry
+        await db.ref('waitlist').push({
+          name: payload.name,
+          email: payload.email,
+          role: payload.role,
+          projectType: payload.projectType,
+          notes: payload.notes,
+          source: payload.source,
+          timestamp: Date.now()
         });
 
-        if (result.duplicate) {
-          setFormStatus(form, result.message || 'You are already on the waitlist.', 'success');
-        } else {
-          const stateClass = result.synced === false ? 'error' : 'success';
-          setFormStatus(form, result.message || 'You are on the waitlist.', stateClass);
-          form.reset();
-        }
+        // Atomic count increment
+        await db.ref('waitlistCount').transaction((current) => (current || 0) + 1, (error, committed, snap) => {
+          if (committed && snap.val() != null) {
+            setCount(snap.val(), { animate: true });
+          }
+        });
 
-        if (typeof result.count === 'number') {
-          setCount(result.count);
-        }
+        setFormStatus(form, 'You are on the waitlist.', 'success');
+        form.reset();
       } catch (error) {
-        setFormStatus(form, error.message || 'Could not submit right now. Please try again.', 'error');
+        console.error('Waitlist submit error:', error);
+        setFormStatus(form, classifyError(error), 'error');
       } finally {
+        submitting = false;
         if (submitBtn) {
           submitBtn.disabled = false;
+          submitBtn.classList.remove('is-loading');
           submitBtn.textContent = submitLabel;
         }
       }
@@ -472,25 +521,16 @@ function setupWaitlistForms() {
   });
 }
 
-async function loadCount() {
-  const cachedCount = readCachedCount();
-  if (cachedCount !== null) {
-    setCount(cachedCount, { animate: false });
-  } else {
-    setCount(null);
-  }
+function loadCount() {
+  setCount(null);
 
-  try {
-    const data = await fetchJson('/api/waitlist/count');
-    setCount(data.count, { animate: true });
-    if (Number.isFinite(data.count)) {
-      writeCachedCount(data.count);
-    }
-  } catch (error) {
-    if (cachedCount === null) {
+  return firebase.database().ref('waitlistCount').once('value')
+    .then((snap) => {
+      setCount(snap.val() || 0, { animate: true });
+    })
+    .catch(() => {
       setCount(null);
-    }
-  }
+    });
 }
 
 async function init() {

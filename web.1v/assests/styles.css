@@ -3321,3 +3321,55 @@ a {
     opacity: 1;
   }
 }
+
+/* ── Form status ── */
+
+.form-status {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  min-height: 1.4em;
+  transition: opacity 0.25s ease;
+}
+
+.form-status.success {
+  color: #7df3c8;
+}
+
+.form-status.error {
+  color: #ff7b7b;
+}
+
+/* ── Submit button loading state ── */
+
+.btn.is-loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent !important;
+}
+
+.btn.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: calc(50% - 10px);
+  left: calc(50% - 10px);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: formSpinner 0.6s linear infinite;
+}
+
+@keyframes formSpinner {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Field error highlight ── */
+
+.field-error input,
+.field-error select,
+.field-error textarea {
+  border-color: #ff5c5c !important;
+  box-shadow: 0 0 0 1px rgba(255, 92, 92, 0.3), 0 0 14px rgba(255, 92, 92, 0.12) !important;
+}
