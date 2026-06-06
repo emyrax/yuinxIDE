@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="60" viewBox="0 0 56 60">
+  <rect x="14" y="38" width="3" height="16" fill="#b5b5b5"/>
+  <rect x="22" y="38" width="3" height="18" fill="#b5b5b5"/>
+  <rect x="30" y="38" width="3" height="16" fill="#b5b5b5"/>
+  <rect x="38" y="38" width="3" height="16" fill="#b5b5b5"/>
+  <circle cx="28" cy="22" r="16" fill="#e8e8e8" stroke="#aaa" stroke-width="1.5"/>
+  <circle cx="22" cy="18" r="5" fill="#ff4444" opacity="0.7"/>
+  <circle cx="28" cy="26" r="5" fill="#44ff44" opacity="0.7"/>
+  <circle cx="34" cy="18" r="5" fill="#4444ff" opacity="0.7"/>
+  <circle cx="28" cy="20" r="3" fill="#ffffff" opacity="0.4"/>
+  <circle id="connector0pin" cx="15" cy="56" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+  <circle id="connector1pin" cx="23" cy="56" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+  <circle id="connector2pin" cx="31" cy="56" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+  <circle id="connector3pin" cx="39" cy="56" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+</svg>

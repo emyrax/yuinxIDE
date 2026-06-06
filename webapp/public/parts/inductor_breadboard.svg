@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="30" viewBox="0 0 120 30">
+  <line x1="4" y1="15" x2="24" y2="15" stroke="#b5b5b5" stroke-width="2"/>
+  <line x1="96" y1="15" x2="116" y2="15" stroke="#b5b5b5" stroke-width="2"/>
+  <path d="M24,15 C24,6 36,6 36,15 C36,6 48,6 48,15 C48,6 60,6 60,15 C60,6 72,6 72,15 C72,6 84,6 84,15 C84,6 96,6 96,15" fill="none" stroke="#6b8e23" stroke-width="3"/>
+  <circle id="connector0pin" cx="4" cy="15" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+  <circle id="connector1pin" cx="116" cy="15" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+</svg>

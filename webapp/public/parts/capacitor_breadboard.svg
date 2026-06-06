@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50">
+  <rect x="16" y="30" width="4" height="16" fill="#b5b5b5"/>
+  <rect x="24" y="30" width="4" height="16" fill="#b5b5b5"/>
+  <ellipse cx="22" cy="18" rx="14" ry="14" fill="#4a90d9" stroke="#2a5a8a" stroke-width="1.5"/>
+  <text x="22" y="22" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial">104</text>
+  <circle id="connector0pin" cx="18" cy="48" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+  <circle id="connector1pin" cx="26" cy="48" r="3" fill="#f7d154" stroke="#2c2c2c" stroke-width="1"/>
+</svg>
