@@ -1,0 +1,16 @@
+{
+  "name": "Yuinx — Your Vibe-mechatronics Engine",
+  "short_name": "Yuinx",
+  "description": "Yuinx is a clean, modern platform for hardware teams. Join the waitlist for early access.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#02040a",
+  "theme_color": "#72d0ff",
+  "icons": [
+    {
+      "src": "./assests/yuinxLogo_Trans.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
