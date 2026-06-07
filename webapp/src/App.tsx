@@ -1,3 +1,4 @@
+import { Routes, Route } from 'react-router-dom';
 import { BackgroundLayers } from './components/BackgroundLayers';
 import { TopNav } from './components/TopNav';
 import { Hero } from './components/Hero';
@@ -9,13 +10,15 @@ import { CircuitEditor } from './components/CircuitEditor';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { WaitlistModal } from './components/WaitlistModal';
+import { AuthPage } from './components/AuthPage';
+import { IDE } from './components/IDE';
 import { useScrollNav } from './hooks/useScrollNav';
 import { useReveal } from './hooks/useReveal';
 import { useBuilderShowcase } from './hooks/useBuilderShowcase';
 import { useWaitlistForm } from './hooks/useWaitlistForm';
 import { useWaitlistCount } from './hooks/useWaitlistCount';
 
-export default function App() {
+function Landing() {
   useScrollNav();
   useReveal();
   useBuilderShowcase();
@@ -38,5 +41,15 @@ export default function App() {
       <Footer />
       <WaitlistModal />
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/ide" element={<IDE />} />
+    </Routes>
   );
 }

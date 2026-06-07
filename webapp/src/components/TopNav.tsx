@@ -15,16 +15,22 @@ export function TopNav() {
         <a href="#contact">Contact</a>
       </nav>
 
-      <button
-        type="button"
-        className="btn btn-primary btn-waitlist nav-waitlist"
-        data-open-waitlist
-      >
-        <span className="btn-label">
-          <span className="nav-waitlist-full">Join Waitlist</span>
-          <span className="nav-waitlist-short">Waitlist</span>
-        </span>
-      </button>
+      <div className="nav-actions">
+        <a href="/auth" className="btn btn-ide">
+          Open Yuinx IDE <span className="btn-ide-beta">Beta</span>
+        </a>
+
+        <button
+          type="button"
+          className="btn btn-primary btn-waitlist nav-waitlist"
+          data-open-waitlist
+        >
+          <span className="btn-label">
+            <span className="nav-waitlist-full">Join Waitlist</span>
+            <span className="nav-waitlist-short">Waitlist</span>
+          </span>
+        </button>
+      </div>
     </header>
   );
 }
