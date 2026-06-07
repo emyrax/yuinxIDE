@@ -92,9 +92,9 @@ export function useWaitlistForm(): void {
 
         // Count transaction
         const countRef = ref(db, 'waitlistCount');
-        await runTransaction(countRef, (current) => (current || 0) + 1).then((result) => {
+        await runTransaction(countRef, (current) => ((current as number) || 0) + 1).then((result) => {
           if (result.committed && result.snapshot.val() != null) {
-            setCount(result.snapshot.val(), { animate: true });
+            setCount(result.snapshot.val() as number, { animate: true });
           }
         });
 
