@@ -70,29 +70,7 @@ export function useWaitlistForm(): void {
       }
 
       try {
-        // --- Step 1: Atomic email lock via /waitlistEmails ---
-        // Transaction ensures only the first submission for a given
-        // (lowercased) email wins the race.
-        try {
-          const emailKey = payload.emailLower.replace(/[.#$\[\]]/g, ',');
-          const emailRef = ref(db, `waitlistEmails/${emailKey}`);
-          const emailResult = await runTransaction(emailRef, (current) => {
-            if (current === true) return; // abort — already claimed
-            return true;
-          });
-
-          if (!emailResult.committed) {
-            setFormStatus(form, 'You are already on the waitlist.', 'info');
-            form.reset();
-            return;
-          }
-        } catch (lockError) {
-          // Atomic lock unavailable (e.g. rules block /waitlistEmails).
-          // Fall through to the duplicate query below.
-          console.warn('Atomic email lock skipped:', lockError);
-        }
-
-        // --- Step 2: Duplicate query (belt-and-suspenders) ---
+        // --- Step 1: Duplicate query (quick early abort) ---
         const waitlistRef = ref(db, 'waitlist');
         const dupSnap = await withTimeout(
           get(query(waitlistRef, orderByChild('email'), equalTo(payload.emailLower))),
@@ -105,7 +83,7 @@ export function useWaitlistForm(): void {
           return;
         }
 
-        // --- Step 3: Push entry ---
+        // --- Step 2: Push entry (save data first) ---
         await withTimeout(
           push(waitlistRef, {
             name: payload.name,
@@ -119,7 +97,19 @@ export function useWaitlistForm(): void {
           FIREBASE_TIMEOUT_MS,
         );
 
-        // --- Step 4: Atomic count increment ---
+        // --- Step 3: Atomic lock (best-effort, after data saved) ---
+        try {
+          const emailKey = payload.emailLower.replace(/[.#$\[\]]/g, ',');
+          const emailRef = ref(db, `waitlistEmails/${emailKey}`);
+          await runTransaction(emailRef, (current) => {
+            if (current === true) return;
+            return true;
+          });
+        } catch (lockError) {
+          console.warn('Atomic email lock skipped:', lockError);
+        }
+
+        // --- Step 4: Count increment ---
         const countRef = ref(db, 'waitlistCount');
         const countResult = await withTimeout(
           runTransaction(countRef, (current) => ((current as number) || 0) + 1),
