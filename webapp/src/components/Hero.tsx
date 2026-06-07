@@ -11,7 +11,10 @@ export function Hero() {
           <span className="live-dot" aria-hidden="true" />
           Waitlist is live
         </p>
-        <img src="./assests/yuinxlogo.png" alt="Yuinx logo" />
+          <img
+          src="./assests/brandYuinxTrans.jpg"
+          alt="Yuinx logo"
+        />
         <p className="mobile-hero-tagline">Your Vibe-mechatronics engine</p>
       </div>
 

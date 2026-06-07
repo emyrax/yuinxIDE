@@ -31,7 +31,7 @@ export function Contact() {
             </svg>
             <span className="contact-link-copy">
               <strong>Email</strong>
-              <span>emyrax@yuinx.vercel.app</span>
+              
             </span>
           </a>
 
