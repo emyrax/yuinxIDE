@@ -3,8 +3,8 @@ export function Contact() {
     <section className="section contact reveal" id="contact">
       <div className="contact-card">
         <div className="contact-head">
-          <h2>Contact</h2>
-          <p>Reach Yuinx across email, social, and docs.</p>
+          <h2>Get in touch</h2>
+          <p>Building the future of hardware development — reach out for early access, partnerships, or investor conversations.</p>
         </div>
 
         <div className="contact-actions">

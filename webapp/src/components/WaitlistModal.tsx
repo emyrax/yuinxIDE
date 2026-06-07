@@ -67,9 +67,9 @@ export function WaitlistModal() {
           ×
         </button>
 
-        <h3 id="waitlistModalTitle">Join the waitlist</h3>
+        <h3 id="waitlistModalTitle">Get early access</h3>
         <p className="modal-copy">
-          We will email invite updates and rollout access.
+          Early access is rolling out now. Join the waitlist to get priority when we launch.
         </p>
 
         <form

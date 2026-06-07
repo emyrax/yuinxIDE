@@ -6,30 +6,30 @@ export function Features() {
       <div className="mobile-feature-stack mobile-only reveal">
         <div className="mobile-feature-head">
           <p className="mobile-feature-kicker">Why Yuinx</p>
-          <h2>Built for faster hardware work.</h2>
+          <h2>Hardware development, reimagined with AI.</h2>
         </div>
 
         <div className="mobile-feature-grid">
           <article className="mobile-feature-card">
-            <strong>AI circuit checks</strong>
-            <span>Upload a build photo and get wiring help fast.</span>
+            <strong>AI circuit analysis</strong>
+            <span>Snap a breadboard photo — get component detection, wiring checks, and fixes instantly.</span>
           </article>
 
           <article className="mobile-feature-card">
-            <strong>Code + hardware together</strong>
-            <span>Keep firmware, parts, and board context in one place.</span>
+            <strong>Code + hardware, unified</strong>
+            <span>Firmware editor, circuit view, and bill of materials — all synced in one workspace.</span>
           </article>
 
           <article className="mobile-feature-card">
-            <strong>Faster debug loop</strong>
-            <span>Analyze, fix, verify, and upload without bouncing between tools.</span>
+            <strong>10x faster iteration</strong>
+            <span>From idea to working prototype in hours, not days. No tool switching, no context loss.</span>
           </article>
         </div>
       </div>
 
       <div className="section-head reveal">
-        <h2>Features</h2>
-        <p>Everything you need to build hardware projects in one clean workflow.</p>
+        <h2>Why Yuinx</h2>
+        <p>Hardware development is fragmented — Yuinx unifies AI analysis, coding, and circuit design into one workflow. 10x your iteration speed.</p>
       </div>
 
       <div className="feature-grid">

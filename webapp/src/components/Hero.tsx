@@ -19,17 +19,18 @@ export function Hero() {
       </div>
 
       <h1 className="desktop-only">
-        Your Vibe-mechatronics,
-        <span className="hero-accent"> engine.</span>
+        Build hardware at the
+        <span className="hero-accent"> speed of AI.</span>
       </h1>
 
       <p className="hero-copy desktop-only">
-      Your modern IDE for Firmware. Upload circuit photos, get AI-powered
-        analysis, and ship firmware faster.
+        Yuinx is the first AI-native IDE for firmware. Snap a photo of your
+        breadboard, get instant component analysis and wiring fixes, then ship
+        working code — all from your browser.
       </p>
 
       <p className="mobile-hero-copy mobile-only">
-        Build, debug, and ship Arduino projects in one clean workspace.
+        The AI-powered IDE for firmware. Snap, analyze, and ship — all in your browser.
       </p>
 
       <div className="hero-actions">
@@ -51,7 +52,7 @@ export function Hero() {
           data-waitlist-count
           aria-label="Loading waitlist count"
         />{' '}
-        + builders joined for early access
+        + engineers, students, and founders joined for early access
       </p>
     </section>
   );

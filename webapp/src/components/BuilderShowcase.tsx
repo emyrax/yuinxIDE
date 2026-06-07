@@ -3,7 +3,8 @@ export function BuilderShowcase() {
     <section className="section builder-cta" id="build">
       <div className="builder-shell">
         <div className="builder-head reveal">
-          <h2>What will you build next?</h2>
+          <h2>What will <em>you</em> build next?</h2>
+          <p className="builder-subhead">Describe any hardware project — Yuinx generates the code, circuit, and parts list.</p>
         </div>
 
         <div className="builder-showcase reveal" data-reveal-delay="60">
@@ -286,7 +287,8 @@ export function BuilderShowcase() {
                 <button
                   type="button"
                   className="builder-send"
-                  aria-label="Show next example prompt"
+                  data-open-waitlist
+                  aria-label="Join the waitlist"
                 >
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M4 12h13" />

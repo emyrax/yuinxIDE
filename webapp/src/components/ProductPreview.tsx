@@ -2,8 +2,8 @@ export function ProductPreview() {
   return (
     <section className="section product-preview" id="product">
       <div className="section-head reveal">
-        <h2>What Yuinx looks like</h2>
-        <p>Code, components, and circuit context in one IDE.</p>
+        <h2>See Yuinx in action</h2>
+        <p>AI-powered code editor, live circuit view, and hardware context — all in one workspace.</p>
       </div>
 
       <div

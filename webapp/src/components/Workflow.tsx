@@ -15,9 +15,9 @@ export function Workflow() {
   return (
     <section className="section workflow" id="workflow">
       <div className="section-head reveal workflow-head">
-        <h2>The Yuinx Workflow</h2>
-        <p>From idea to working build.</p>
-        <p className="workflow-subcopy">Hardware, wiring, and code — in one flow.</p>
+        <h2>From napkin sketch to shipped hardware</h2>
+        <p>Describe what you want to build. Yuinx handles the rest.</p>
+        <p className="workflow-subcopy">Hardware, wiring, and code — in one AI-powered flow.</p>
       </div>
 
       <div className="workflow-shell reveal" data-reveal-delay="60">
@@ -50,7 +50,7 @@ export function Workflow() {
             }
             heading="Context"
             label="System"
-            description="Understands the full build — parts, wiring, and code."
+            description="Understands the full build — parts, wiring, code to step by step guides."
           />
 
           <Arrow />

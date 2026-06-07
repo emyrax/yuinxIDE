@@ -805,8 +805,11 @@ a {
   letter-spacing: -0.03em;
 }
 
-.builder-head p {
-  display: none;
+.builder-subhead {
+  margin-top: 10px;
+  color: var(--text-soft);
+  font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+  line-height: 1.55;
 }
 
 .builder-showcase {
@@ -2505,12 +2508,20 @@ a {
     order: 2;
   }
 
-  #features {
+  #workflow {
     order: 3;
   }
 
-  #contact {
+  #features {
     order: 4;
+  }
+
+  #build {
+    order: 5;
+  }
+
+  #contact {
+    order: 6;
   }
 
   .top-nav {
@@ -2533,8 +2544,6 @@ a {
   }
 
   .desktop-only,
-  .workflow,
-  .builder-cta,
   .features .section-head,
   .feature-grid {
     display: none !important;
@@ -2897,6 +2906,123 @@ a {
     font-size: 0.72rem;
   }
 
+  .workflow {
+    padding: 20px 18px;
+    border: 1px solid rgba(115, 140, 189, 0.12);
+    border-radius: 26px;
+    background: rgba(8, 13, 23, 0.76);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+  }
+
+  .workflow .section-head {
+    text-align: left;
+  }
+
+  .workflow .section-head h2 {
+    font-size: clamp(1.35rem, 7vw, 1.72rem);
+    line-height: 1.08;
+  }
+
+  .workflow .section-head p {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    line-height: 1.52;
+  }
+
+  .workflow-subcopy {
+    font-size: 0.8rem;
+  }
+
+  .workflow-flow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .workflow-arrow {
+    display: none;
+  }
+
+  .builder-cta {
+    padding: 20px 18px;
+    border: 1px solid rgba(115, 140, 189, 0.12);
+    border-radius: 26px;
+    background: rgba(8, 13, 23, 0.76);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+  }
+
+  .builder-head h2 {
+    font-size: clamp(1.35rem, 7vw, 1.72rem);
+    line-height: 1.08;
+    text-align: left;
+  }
+
+  .builder-subhead {
+    font-size: 0.88rem;
+    line-height: 1.52;
+    text-align: left;
+  }
+
+  .builder-showcase {
+    margin-top: 12px;
+  }
+
+  .builder-action-row {
+    gap: 6px;
+  }
+
+  .builder-action-pill {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .builder-action-pill svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .builder-stage-panel.is-active {
+    min-height: 120px;
+  }
+
+  .builder-stage-panel .builder-breadboard,
+  .builder-stage-panel .builder-pcb,
+  .builder-stage-panel .builder-stage-schematic,
+  .builder-stage-panel .builder-stage-simulate,
+  .builder-stage-panel .builder-stage-serial {
+    transform: scale(0.48);
+    transform-origin: top left;
+  }
+
+  .builder-stage-panel .builder-stage-generate {
+    padding: 12px;
+  }
+
+  .builder-stage-panel .builder-stage-parts {
+    min-height: 60px;
+  }
+
+  .builder-stage-parts-marquee {
+    gap: 8px;
+  }
+
+  .builder-part-card {
+    min-width: 60px;
+    padding: 6px 4px;
+    font-size: 0.6rem;
+  }
+
+  .builder-part-card img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .builder-send {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
   .footer {
     margin-top: 14px;
     margin-bottom: calc(18px + env(safe-area-inset-bottom));
@@ -2964,6 +3090,113 @@ a {
   .modal-card .modal-close {
     top: 14px;
     right: 16px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --max-width: 1320px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.2rem, 4.5vw, 4.5rem);
+  }
+
+  .hero-copy {
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    max-width: 52ch;
+  }
+
+  .section-head h2,
+  .contact-card h2 {
+    font-size: clamp(2rem, 3.2vw, 2.8rem);
+  }
+
+  .builder-head h2 {
+    font-size: clamp(2.2rem, 3.2vw, 2.8rem);
+  }
+
+  .builder-subhead {
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .features,
+  .contact {
+    padding: 52px 0 72px;
+  }
+
+  .product-preview {
+    padding: 28px 0 56px;
+  }
+
+  .modal-card {
+    width: min(600px, 100%);
+  }
+
+  .modal-card .waitlist-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modal-card .waitlist-form label:first-child,
+  .modal-card .waitlist-form label:nth-child(2) {
+    grid-column: span 1;
+  }
+
+  .modal-card .waitlist-form label:nth-child(n+3):not(.hp-field),
+  .modal-card .waitlist-form button[type="submit"],
+  .modal-card .waitlist-form .form-status {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .modal-card {
+    width: min(520px, 100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .features,
+  .contact {
+    padding: 32px 0 40px;
+  }
+
+  .product-preview {
+    padding: 18px 0 30px;
+  }
+
+  .section-head h2,
+  .contact-card h2 {
+    font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+  }
+
+  .section-head p {
+    font-size: 0.92rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .workflow-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .builder-subhead {
+    font-size: 0.92rem;
+  }
+
+  .builder-action-row {
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
   }
 }
 
