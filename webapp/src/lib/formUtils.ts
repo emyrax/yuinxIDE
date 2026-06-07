@@ -1,4 +1,5 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const FIREBASE_TIMEOUT_MS = 15000;
 
 export interface ValidationError {
   name: string;
@@ -8,6 +9,7 @@ export interface ValidationError {
 export interface FormPayload {
   name: string;
   email: string;
+  emailLower: string;
   role: string;
   projectType: string;
   notes: string;
@@ -17,9 +19,11 @@ export interface FormPayload {
 
 export function parseForm(form: HTMLFormElement): FormPayload {
   const data = new FormData(form);
+  const email = String(data.get('email') || '').trim();
   return {
     name: String(data.get('name') || '').trim(),
-    email: String(data.get('email') || '').trim(),
+    email,
+    emailLower: email.toLowerCase(),
     role: String(data.get('role') || '').trim(),
     projectType: String(data.get('projectType') || '').trim(),
     notes: String(data.get('notes') || '').trim(),
@@ -63,15 +67,17 @@ export function markField(form: HTMLFormElement, name: string): void {
   field.setAttribute('aria-invalid', 'true');
 }
 
+export type StatusType = '' | 'success' | 'error' | 'info';
+
 export function setFormStatus(
   form: HTMLFormElement,
   message: string,
-  type: '' | 'success' | 'error' = ''
+  type: StatusType = ''
 ): void {
   const statusEl = form.querySelector('[data-form-status]');
   if (!statusEl) return;
   statusEl.textContent = message;
-  statusEl.classList.remove('success', 'error');
+  statusEl.classList.remove('success', 'error', 'info');
   if (type) statusEl.classList.add(type);
 }
 
@@ -79,10 +85,34 @@ export function classifyError(error: unknown): string {
   if (typeof navigator !== 'undefined' && !navigator.onLine)
     return 'No internet connection.';
   const err = error as { code?: string; message?: string };
-  const code = err.code || '';
-  if (code === 'PERMISSION_DENIED') return 'Server error. Please try again.';
-  if (code === 'NETWORK_ERROR') return 'No internet connection.';
+  const code = (err.code || '').toLowerCase();
+  if (code.includes('permission-denied')) return 'Server error. Please try again.';
+  if (code.includes('network')) return 'No internet connection.';
   if (err.message && err.message.includes('quota'))
     return 'Too many signups right now. Please wait.';
   return 'Something went wrong. Please try again.';
+}
+
+export function resetSubmitButton(
+  form: HTMLFormElement,
+  label?: string
+): void {
+  const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+  if (!btn) return;
+  btn.disabled = false;
+  btn.classList.remove('is-loading');
+  if (label) btn.textContent = label;
+}
+
+export function timeout(ms: number): Promise<never> {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('Request timed out.')), ms);
+  });
+}
+
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Request timed out.')), ms);
+    promise.then(resolve, reject).finally(() => clearTimeout(timer));
+  });
 }

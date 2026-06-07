@@ -9,6 +9,9 @@ import {
   markField,
   setFormStatus,
   classifyError,
+  resetSubmitButton,
+  withTimeout,
+  FIREBASE_TIMEOUT_MS,
 } from '../lib/formUtils';
 
 export function useWaitlistForm(): void {
@@ -38,8 +41,7 @@ export function useWaitlistForm(): void {
       const submitBtn = form.querySelector<HTMLButtonElement>(
         'button[type="submit"]'
       );
-      const submitLabel =
-        submitBtn?.dataset.submitLabel || 'Submit';
+      const submitLabel = submitBtn?.dataset.submitLabel || 'Submit';
 
       const payload = parseForm(form);
 
@@ -68,48 +70,80 @@ export function useWaitlistForm(): void {
       }
 
       try {
-        const waitlistRef = ref(db, 'waitlist');
+        // --- Step 1: Atomic email lock via /waitlistEmails ---
+        // Transaction ensures only the first submission for a given
+        // (lowercased) email wins the race.
+        try {
+          const emailKey = payload.emailLower.replace(/[.#$\[\]]/g, ',');
+          const emailRef = ref(db, `waitlistEmails/${emailKey}`);
+          const emailResult = await runTransaction(emailRef, (current) => {
+            if (current === true) return; // abort — already claimed
+            return true;
+          });
 
-        // Duplicate check
-        const dupSnap = await get(
-          query(waitlistRef, orderByChild('email'), equalTo(payload.email))
+          if (!emailResult.committed) {
+            setFormStatus(form, 'You are already on the waitlist.', 'info');
+            form.reset();
+            return;
+          }
+        } catch (lockError) {
+          // Atomic lock unavailable (e.g. rules block /waitlistEmails).
+          // Fall through to the duplicate query below.
+          console.warn('Atomic email lock skipped:', lockError);
+        }
+
+        // --- Step 2: Duplicate query (belt-and-suspenders) ---
+        const waitlistRef = ref(db, 'waitlist');
+        const dupSnap = await withTimeout(
+          get(query(waitlistRef, orderByChild('email'), equalTo(payload.emailLower))),
+          FIREBASE_TIMEOUT_MS,
         );
+
         if (dupSnap.exists()) {
-          setFormStatus(form, 'You are already on the waitlist.', 'success');
+          setFormStatus(form, 'You are already on the waitlist.', 'info');
+          form.reset();
           return;
         }
 
-        // Push
-        await push(waitlistRef, {
-          name: payload.name,
-          email: payload.email,
-          role: payload.role,
-          projectType: payload.projectType,
-          notes: payload.notes,
-          source: payload.source,
-          timestamp: Date.now(),
-        });
+        // --- Step 3: Push entry ---
+        await withTimeout(
+          push(waitlistRef, {
+            name: payload.name,
+            email: payload.emailLower,
+            role: payload.role,
+            projectType: payload.projectType,
+            notes: payload.notes,
+            source: payload.source,
+            timestamp: Date.now(),
+          }),
+          FIREBASE_TIMEOUT_MS,
+        );
 
-        // Count transaction
+        // --- Step 4: Atomic count increment ---
         const countRef = ref(db, 'waitlistCount');
-        await runTransaction(countRef, (current) => ((current as number) || 0) + 1).then((result) => {
-          if (result.committed && result.snapshot.val() != null) {
-            setCount(result.snapshot.val() as number, { animate: true });
-          }
-        });
+        const countResult = await withTimeout(
+          runTransaction(countRef, (current) => ((current as number) || 0) + 1),
+          FIREBASE_TIMEOUT_MS,
+        );
+
+        if (countResult.committed && countResult.snapshot.val() != null) {
+          setCount(countResult.snapshot.val() as number, { animate: true });
+        }
 
         setFormStatus(form, 'You are on the waitlist.', 'success');
         form.reset();
       } catch (error) {
-        console.error('Waitlist submit error:', error);
+        const err = error as { code?: string; message?: string; name?: string };
+        console.error(
+          'Waitlist submit error:',
+          err.name || '(no name)',
+          err.code || '(no code)',
+          err.message || '(no message)',
+        );
         setFormStatus(form, classifyError(error), 'error');
       } finally {
         submitting.current = false;
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.classList.remove('is-loading');
-          submitBtn.textContent = submitLabel;
-        }
+        resetSubmitButton(form, submitLabel);
       }
     };
     form.addEventListener('submit', handleSubmit);

@@ -3083,6 +3083,10 @@ a {
   color: #ff7b7b;
 }
 
+.form-status.info {
+  color: #f0c674;
+}
+
 /* ── Submit button loading state ── */
 
 .btn.is-loading {

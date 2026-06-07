@@ -1,34 +1,45 @@
-# Yuinx web.1v
+# yuinx.app — agent instructions
 
-Static landing page for Yuinx (AI-powered Arduino IDE).
+All code is in `webapp/`. Root directory has nothing else.
 
-## Structure
+## Commands (run from `webapp/`)
 
-```
-yuinx.app/
-  AGENTS.md
-  web.1v/
-    index.html   -- main landing page (vanilla HTML)
-    app.js       -- waitlist form, animated builder showcase, nav/reveal
-    styles.css   -- all styles (~3300 lines)
-    assests/     -- images (brand logos, IDE screenshot, part SVGs)
-```
+| Action | Command |
+|--------|---------|
+| Dev server | `npm run dev` |
+| Full build | `npm run build` (runs `tsc -b` THEN `vite build`) |
+| Lint | `npm run lint` (ESLint flat config) |
+| Preview prod build | `npm run preview` |
 
-No build step, no package manager, no tests.
+No test framework or Prettier are installed.
 
-## Dev workflow
+## Tech stack
 
-There are no build, lint, test, or typecheck commands. Just open `index.html` in a browser or serve with any static file server:
+- **React 19 + TypeScript ~6.0 + Vite 8** (single-page landing, no router)
+- **Firebase Realtime Database** (modular SDK v12, no Auth, no Firestore)
+- **CSS**: single `src/index.css` (~3100 lines, hand-written, no CSS modules/Tailwind)
+- **Deploy**: Vercel (`framework: "vite"` in vercel.json, output `dist/`)
 
-```
-npx serve web.1v
-```
+## Quirks & gotchas
 
-## Key facts
+- `"verbatimModuleSyntax": true` in tsconfig — use `import type { Foo }` for type-only imports.
+- `"erasableSyntaxOnly": true` (TS 6+) — no enums, namespaces, or parameter properties.
+- `public/assests/` typo is **intentional and consistent** (not "assets"). Asset URLs use `./assests/...`.
+- Hooks use direct DOM queries (`document.querySelector`, `classList`) instead of React refs/state.
+- No `.env` — Firebase config is hardcoded in `src/lib/firebase.ts`.
+- Waitlist form uses a honeypot field (`name="company"`, hidden from users).
 
-- **Waitlist form** writes submissions to Firebase Realtime Database (`/waitlist/`). Duplicate email check uses `orderByChild('email')`. Count maintained atomically at `/waitlistCount` via transaction.
-- **Firebase initialized** in `assests/app.js` with compat SDK (scripts loaded from CDN in `index.html`).
-- **Animation logic** (`setupBuilderShowcase`) cycles through example prompts; uses `IntersectionObserver` for scroll reveals.
-- **Mobile-responsive** with explicit `.mobile-only` / `.desktop-only` classes.
-- **All asset references** use the misspelled path `./assests/` (not `./assets/`). This is intentional — the directory is named `assests/` on disk.
-- No external JS dependencies (beyond Firebase SDK, Google Fonts, and Cloudflare beacon).
+## Firebase RTDB
+
+- Paths: `/waitlist`, `/waitlistCount`, `/waitlistEmails/{emailLower}`.
+- No Auth — all reads/writes depend on **Firebase Realtime Database Rules** being set to public/true.
+- Required index: `"waitlist": { ".indexOn": ["email"] }`.
+- Atomic email dedup via `runTransaction` on `/waitlistEmails/{emailLower}` (gracefully degrades if rules block it).
+
+## Architecture notes
+
+- **Single entry**: `src/main.tsx` → `App.tsx` (no lazy loading, no routing).
+- **3 layers per page section**: `src/components/`, `src/hooks/` (DOM-manipulation hooks), `src/lib/` (pure utils).
+- Form status handled via `data-form-status` elements, not React state.
+- Waitlist count animated via `setCount()` in `countUtils.ts` (appends `digit-char` spans).
+- `npm run build` must run both `tsc -b` AND `vite build` (separate steps, order matters).
