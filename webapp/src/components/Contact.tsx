@@ -23,7 +23,7 @@ export function Contact() {
 
           <a
             className="contact-link"
-            href="mailto:ekwuemesat@gmail.com"
+            href="mailto:emyrax.ai@gmail.com"
           >
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" />
@@ -31,7 +31,7 @@ export function Contact() {
             </svg>
             <span className="contact-link-copy">
               <strong>Email</strong>
-              <span>ekwuemesat@gmail.com</span>
+              <span>emyrax@yuinx.vercel.app</span>
             </span>
           </a>
 
