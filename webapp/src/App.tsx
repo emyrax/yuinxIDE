@@ -5,6 +5,7 @@ import { ProductPreview } from './components/ProductPreview';
 import { Workflow } from './components/Workflow';
 import { Features } from './components/Features';
 import { BuilderShowcase } from './components/BuilderShowcase';
+import { CircuitEditor } from './components/CircuitEditor';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { WaitlistModal } from './components/WaitlistModal';
@@ -27,6 +28,7 @@ export default function App() {
       <TopNav />
       <main>
         <Hero />
+        <CircuitEditor />
         <ProductPreview />
         <Workflow />
         <Features />

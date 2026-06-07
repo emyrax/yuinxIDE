@@ -21,7 +21,7 @@ export function Hero() {
       </h1>
 
       <p className="hero-copy desktop-only">
-        The modern IDE for Arduino. Upload circuit photos, get AI-powered
+      Your modern IDE for Firmware. Upload circuit photos, get AI-powered
         analysis, and ship firmware faster.
       </p>
 
@@ -48,7 +48,7 @@ export function Hero() {
           data-waitlist-count
           aria-label="Loading waitlist count"
         />{' '}
-        builders joined for early access
+        + builders joined for early access
       </p>
     </section>
   );

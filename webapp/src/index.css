@@ -1,22 +1,25 @@
 :root {
   --bg: #02040a;
-  --bg-soft: #081022;
-  --panel: #0b1325;
-  --panel-soft: rgba(8, 14, 26, 0.92);
-  --line: rgba(126, 156, 210, 0.28);
-  --text: #eef5ff;
-  --text-soft: #aebfda;
-  --text-muted: #7b8fb2;
-  --accent: #72d0ff;
-  --accent-2: #4d78ff;
-  --accent-rgb: 114, 208, 255;
-  --accent-2-rgb: 77, 120, 255;
-  --line-strong: rgba(var(--accent-rgb), 0.58);
+  --bg-soft: #0a1226;
+  --glass-bg: rgba(2, 4, 10, 0.55);
+  --glass-border: rgba(0, 242, 255, 0.10);
+  --glass-glow: rgba(0, 242, 255, 0.06);
+  --line: rgba(0, 242, 255, 0.15);
+  --text: #E0F7FA;
+  --text-soft: #8ab4c4;
+  --text-muted: #5a7a8a;
+  --accent: #00F2FF;
+  --accent-2: #0066FF;
+  --accent-rgb: 0, 242, 255;
+  --accent-2-rgb: 0, 102, 255;
+  --accent-gradient: linear-gradient(135deg, #00A3FF 0%, #00FFD1 100%);
+  --shadow-glow: rgba(0, 242, 255, 0.4);
+  --line-strong: rgba(var(--accent-rgb), 0.50);
   --max-width: 1140px;
   --radius: 14px;
   --radius-lg: 20px;
-  --font-display: 'Sora', 'Space Grotesk', sans-serif;
-  --font-body: 'Space Grotesk', sans-serif;
+  --font-display: 'Inter', 'Space Grotesk', sans-serif;
+  --font-body: 'Space Grotesk', 'Inter', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -34,16 +37,82 @@ body {
   min-height: 100vh;
   color: var(--text);
   font-family: var(--font-body);
-  background: radial-gradient(1200px circle at 50% -14%, rgba(var(--accent-rgb), 0.14), transparent 56%),
-    radial-gradient(980px circle at 92% 110%, rgba(var(--accent-2-rgb), 0.16), transparent 58%),
-    radial-gradient(780px circle at 8% 118%, rgba(var(--accent-2-rgb), 0.08), transparent 60%),
-    linear-gradient(160deg, #01030a, var(--bg) 52%, #050b1a);
+  letter-spacing: 0.02em;
+  background:
+    radial-gradient(1200px circle at 20% -10%, rgba(0, 242, 255, 0.10), transparent 50%),
+    radial-gradient(1100px circle at 80% 20%, rgba(0, 102, 255, 0.08), transparent 50%),
+    radial-gradient(800px circle at 50% 110%, rgba(0, 242, 255, 0.04), transparent 60%),
+    #02040a;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 body.modal-open {
   overflow: hidden;
+}
+
+/* ── Glass panel utility ── */
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 0 40px var(--glass-glow),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel.inner-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 20%, rgba(0, 242, 255, 0.06), transparent 60%);
+}
+
+.glass-lens {
+  position: relative;
+  background: rgba(2, 4, 10, 0.40);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 242, 255, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 0 60px rgba(0, 242, 255, 0.05),
+    inset 0 1px 0 rgba(0, 242, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 102, 255, 0.10),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.glass-lens::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 25% 20%, rgba(0, 242, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at 75% 80%, rgba(0, 102, 255, 0.04), transparent 50%);
+  mix-blend-mode: overlay;
+}
+
+.glass-lens::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0, 242, 255, 0.02) 25%, transparent 50%, rgba(0, 102, 255, 0.02) 75%, transparent 100%);
+  animation: lensRotate 20s linear infinite;
+}
+
+@keyframes lensRotate {
+  to { transform: rotate(360deg); }
 }
 
 a {
@@ -171,23 +240,33 @@ a {
 }
 
 .btn-primary {
-  color: #03222d;
-  border-color: rgba(255, 255, 255, 0.12);
-  background: linear-gradient(95deg, var(--accent), var(--accent-2), var(--accent));
-  background-size: 180% 180%;
+  border: none;
+  color: #02040a;
+  background: var(--accent-gradient);
+  background-size: 200% 200%;
   background-position: 0% 50%;
-  box-shadow: 0 14px 34px rgba(var(--accent-rgb), 0.24), 0 10px 22px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    0 0 20px rgba(0, 242, 255, 0.25),
+    0 0 60px rgba(0, 242, 255, 0.08),
+    0 14px 34px rgba(0, 0, 0, 0.3);
+  transition: all 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background-position: 100% 50%;
-  box-shadow: 0 18px 44px rgba(var(--accent-rgb), 0.32), 0 14px 28px rgba(0, 0, 0, 0.3);
+  background-position: 100% 100%;
+  box-shadow:
+    0 0 30px rgba(0, 242, 255, 0.45),
+    0 0 80px rgba(0, 242, 255, 0.15),
+    0 18px 44px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn-primary:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 12px 30px rgba(var(--accent-rgb), 0.22), 0 8px 18px rgba(0, 0, 0, 0.26);
+  transform: translateY(0) scale(0.98);
+  box-shadow:
+    0 0 20px rgba(0, 242, 255, 0.25),
+    0 0 60px rgba(0, 242, 255, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.28);
 }
 
 .btn-waitlist {
@@ -3119,4 +3198,212 @@ a {
 .field-error textarea {
   border-color: #ff5c5c !important;
   box-shadow: 0 0 0 1px rgba(255, 92, 92, 0.3), 0 0 14px rgba(255, 92, 92, 0.12) !important;
+}
+
+/* ── Code editor + circuit visualizer ── */
+
+.circuit-editor-section {
+  width: min(calc(100% - 24px), var(--max-width));
+  margin-inline: auto;
+  margin-top: 34px;
+  position: relative;
+  z-index: 1;
+  scroll-margin-top: 86px;
+}
+
+.circuit-editor-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 480px;
+  gap: 1px;
+  position: relative;
+  isolation: isolate;
+}
+
+.circuit-editor-container .code-panel {
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.circuit-editor-container .code-panel .cm-editor {
+  height: 100%;
+  min-height: 400px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.circuit-editor-container .code-panel .cm-editor .cm-scroller {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.circuit-editor-container .code-panel .cm-editor.cm-focused {
+  outline: none;
+}
+
+.circuit-editor-container .circuit-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.03), transparent 60%);
+}
+
+.circuit-visualizer {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: circuitFloat 8s ease-in-out infinite;
+}
+
+@keyframes circuitFloat {
+  0%, 100% { transform: rotateX(2deg) rotateY(-2deg); }
+  50% { transform: rotateX(-2deg) rotateY(2deg); }
+}
+
+.circuit-visualizer svg {
+  width: 100%;
+  height: 100%;
+}
+
+.circuit-trace {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+
+.circuit-trace.glow {
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.circuit-trace.animated {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: traceDraw 3s ease forwards;
+}
+
+.circuit-trace.animated-delayed {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: traceDraw 3s ease 0.5s forwards;
+}
+
+.circuit-trace.cobalt {
+  stroke: var(--accent-2);
+  filter: drop-shadow(0 0 6px var(--accent-2));
+}
+
+@keyframes traceDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.circuit-node {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 8px var(--accent));
+  animation: nodePulse 3s ease-in-out infinite;
+}
+
+.circuit-node.cobalt {
+  fill: var(--accent-2);
+  filter: drop-shadow(0 0 8px var(--accent-2));
+}
+
+.circuit-node.small {
+  animation-delay: -1.5s;
+}
+
+@keyframes nodePulse {
+  0%, 100% { r: 3; opacity: 0.8; }
+  50% { r: 5; opacity: 1; }
+}
+
+.circuit-particle {
+  fill: var(--accent);
+  opacity: 0;
+  animation: particleOrbit 6s linear infinite;
+}
+
+.circuit-particle.cobalt {
+  fill: var(--accent-2);
+  animation-duration: 8s;
+  animation-delay: -2s;
+}
+
+.circuit-particle.dim {
+  animation-duration: 10s;
+  animation-delay: -4s;
+}
+
+@keyframes particleOrbit {
+  0% { opacity: 1; offset-distance: 0%; }
+  25% { opacity: 0.3; }
+  50% { opacity: 1; }
+  75% { opacity: 0.3; }
+  100% { opacity: 1; offset-distance: 100%; }
+}
+
+.circuit-chip {
+  fill: rgba(0, 242, 255, 0.06);
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.circuit-label {
+  fill: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ── CodeMirror overrides ── */
+
+.cm-editor {
+  background: transparent !important;
+}
+
+.cm-editor .cm-gutters {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-right: 1px solid rgba(0, 242, 255, 0.08) !important;
+}
+
+.cm-editor .cm-activeLineGutter {
+  background: rgba(0, 242, 255, 0.06) !important;
+}
+
+.cm-editor .cm-activeLine {
+  background: rgba(0, 242, 255, 0.03) !important;
+}
+
+.cm-editor .cm-cursor {
+  border-left-color: var(--accent) !important;
+}
+
+.cm-editor .cm-selectionBackground,
+.cm-editor.cm-focused .cm-selectionBackground {
+  background: rgba(0, 242, 255, 0.12) !important;
+}
+
+@media (max-width: 768px) {
+  .circuit-editor-container {
+    grid-template-columns: 1fr;
+  }
+
+  .circuit-editor-container .code-panel .cm-editor {
+    min-height: 300px;
+  }
+
+  .circuit-visualizer {
+    min-height: 300px;
+  }
 }
