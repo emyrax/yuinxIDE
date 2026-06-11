@@ -7,6 +7,7 @@ import { Workflow } from './components/Workflow';
 import { Features } from './components/Features';
 import { BuilderShowcase } from './components/BuilderShowcase';
 import { CircuitEditor } from './components/CircuitEditor';
+import { Demo } from './components/Demo';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { WaitlistModal } from './components/WaitlistModal';
@@ -32,6 +33,7 @@ function Landing() {
       <main>
         <Hero />
         <CircuitEditor />
+        <Demo />
         <ProductPreview />
         <Workflow />
         <Features />
